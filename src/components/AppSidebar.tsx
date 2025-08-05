@@ -1,5 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { User, BarChart3, Menu } from "lucide-react";
+import { User, BarChart3, Menu, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +31,7 @@ const navigationItems = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const { logout, user } = useAuth();
   const collapsed = state === "collapsed";
 
   const isActive = (path: string) => {
@@ -39,56 +42,84 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className={`${collapsed ? "w-16" : "w-64"} transition-all duration-300`}>
-      <SidebarContent className="bg-gradient-card shadow-card border-r border-border">
-        <div className="p-6 border-b border-border">
-          {!collapsed && (
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <h2 className="text-lg font-semibold text-foreground">Dashboard</h2>
-            </div>
-          )}
-          {collapsed && (
-            <div className="flex justify-center">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-4 h-4 text-primary-foreground" />
-              </div>
-            </div>
-          )}
-        </div>
+      <Sidebar className={`${collapsed ? "w-16" : "w-64"} transition-all duration-300`}>
+        <SidebarContent className="bg-gradient-card shadow-card border-r border-border">
+          <div className="p-6 border-b border-border">
+            {!collapsed && (
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-4 h-4 text-primary-foreground" />
+                  </div>
+                  <h2 className="text-lg font-semibold text-foreground">Dashboard</h2>
+                </div>
+            )}
+            {collapsed && (
+                <div className="flex justify-center">
+                  <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-4 h-4 text-primary-foreground" />
+                  </div>
+                </div>
+            )}
+          </div>
 
-        <SidebarGroup className="px-3 py-4">
-          <SidebarGroupLabel className={`${collapsed ? "sr-only" : ""} text-muted-foreground font-medium`}>
-            Navigation
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
-              {navigationItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/"}
-                      className={({ isActive: navIsActive }) =>
-                        `flex items-center px-3 py-2 rounded-lg transition-all duration-200 group ${
-                          isActive(item.url) || navIsActive
-                            ? "bg-accent text-accent-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                        }`
-                      }
-                    >
-                      <item.icon className={`${collapsed ? "w-5 h-5" : "w-5 h-5 mr-3"} transition-transform group-hover:scale-110`} />
-                      {!collapsed && <span className="font-medium">{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+          <SidebarGroup className="px-3 py-4">
+            <SidebarGroupLabel className={`${collapsed ? "sr-only" : ""} text-muted-foreground font-medium`}>
+              Navigation
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="space-y-2">
+                {navigationItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <NavLink
+                            to={item.url}
+                            end={item.url === "/"}
+                            className={({ isActive: navIsActive }) =>
+                                `flex items-center px-3 py-2 rounded-lg transition-all duration-200 group ${
+                                    isActive(item.url) || navIsActive
+                                        ? "bg-accent text-accent-foreground shadow-sm"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                                }`
+                            }
+                        >
+                          <item.icon className={`${collapsed ? "w-5 h-5" : "w-5 h-5 mr-3"} transition-transform group-hover:scale-110`} />
+                          {!collapsed && <span className="font-medium">{item.title}</span>}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          {/* User section with logout */}
+          <div className="mt-auto p-3 border-t border-border">
+            {!collapsed ? (
+                <div className="space-y-3">
+                  <div className="px-3 py-2 text-sm text-muted-foreground">
+                    {user?.email}
+                  </div>
+                  <Button
+                      onClick={logout}
+                      variant="ghost"
+                      className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  >
+                    <LogOut className="w-4 h-4 mr-3" />
+                    Çıkış Yap
+                  </Button>
+                </div>
+            ) : (
+                <Button
+                    onClick={logout}
+                    variant="ghost"
+                    size="icon"
+                    className="w-full text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                >
+                  <LogOut className="w-4 h-4" />
+                </Button>
+            )}
+          </div>
+        </SidebarContent>
+      </Sidebar>
   );
 }
