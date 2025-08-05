@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { loginRequest, registerRequest, getProfile } from "@/services/authService";
+import {loginRequest, registerRequest, getProfile, logoutRequest} from "@/services/authService";
 
 interface User {
     id: string;
@@ -49,6 +49,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             getProfile().then((profile) => setUser(profile));
         },
     });
+    const logoutMutation = useMutation({
+        mutationFn: () =>
+            logoutRequest(),
+        onSuccess: (data) => {
+            localStorage.removeItem("access_token");
+        },
+    });
 
     const registerMutation = useMutation({
         mutationFn: ({ email, password }: { email: string; password: string }) =>
@@ -66,7 +73,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         registerMutation.mutate({ email, password });
     };
 
-    const logout = () => {
+    const logout = async () => {
+        await logoutMutation.mutateAsync();
         localStorage.removeItem("access_token");
         setUser(null);
         queryClient.clear();

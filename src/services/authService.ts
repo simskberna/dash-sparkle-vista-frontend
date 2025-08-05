@@ -10,6 +10,10 @@ export const loginRequest = async (email: string, password: string): Promise<Log
     return res.data;
 };
 
+export const logoutRequest = async (): Promise<never> => {
+    return await api.post("/auth/logout");
+};
+
 export const registerRequest = async (email: string, password: string) => {
     const res = await api.post("/auth/register", { email, password });
     return res.data;

@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import { User, BarChart3, Menu, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,13 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useToast } from '@/hooks/use-toast';
+
 
 const navigationItems = [
   {
     title: "Dashboard",
-    url: "/",
+    url: "/dashboard",
     icon: BarChart3,
   },
   {
@@ -30,6 +32,8 @@ const navigationItems = [
 
 export function AppSidebar() {
   const { state } = useSidebar();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const location = useLocation();
   const { logout, user } = useAuth();
   const collapsed = state === "collapsed";
@@ -40,6 +44,22 @@ export function AppSidebar() {
     }
     return location.pathname.startsWith(path);
   };
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: 'Başarılı!',
+        description: 'Çıkış yapıldı.',
+      });
+      navigate("/")
+    } catch (error) {
+      toast({
+        title: 'Hata!',
+        description: 'Giriş yapılamadı. Email ve şifrenizi kontrol edin.',
+        variant: 'destructive',
+      });
+    }
+  }
 
   return (
       <Sidebar className={`${collapsed ? "w-16" : "w-64"} transition-all duration-300`}>
@@ -73,7 +93,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild>
                         <NavLink
                             to={item.url}
-                            end={item.url === "/"}
+                            end={item.url === "/dashboard"}
                             className={({ isActive: navIsActive }) =>
                                 `flex items-center px-3 py-2 rounded-lg transition-all duration-200 group ${
                                     isActive(item.url) || navIsActive
@@ -100,7 +120,7 @@ export function AppSidebar() {
                     {user?.email}
                   </div>
                   <Button
-                      onClick={logout}
+                      onClick={handleLogout}
                       variant="ghost"
                       className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-accent/50"
                   >
@@ -110,7 +130,7 @@ export function AppSidebar() {
                 </div>
             ) : (
                 <Button
-                    onClick={logout}
+                    onClick={handleLogout}
                     variant="ghost"
                     size="icon"
                     className="w-full text-muted-foreground hover:text-foreground hover:bg-accent/50"
