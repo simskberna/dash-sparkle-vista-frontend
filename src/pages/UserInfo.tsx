@@ -25,70 +25,23 @@ const UserInfo = () => {
         <p className="text-muted-foreground">Manage your profile and account settings</p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Profile Card */}
-        <Card className="lg:col-span-1 bg-gradient-card shadow-elevated border-border">
-          <CardHeader className="text-center pb-4">
-            <div className="flex justify-center mb-4">
-              <Avatar className="w-24 h-24 shadow-primary">
-                <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" />
-                <AvatarFallback className="text-xl bg-gradient-primary text-primary-foreground">JD</AvatarFallback>
-              </Avatar>
-            </div>
-            <CardTitle className="text-2xl text-foreground">John Doe</CardTitle>
-            <CardDescription className="text-base">Senior Developer</CardDescription>
-            <div className="flex justify-center gap-2 mt-3">
-              <Badge variant="secondary" className="bg-accent text-accent-foreground">Pro User</Badge>
-              <Badge variant="outline" className="border-primary text-primary">Verified</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <Mail className="w-4 h-4 text-muted-foreground" />
-                <span className="text-foreground">john.doe@example.com</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Phone className="w-4 h-4 text-muted-foreground" />
-                <span className="text-foreground">+1 (555) 123-4567</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <MapPin className="w-4 h-4 text-muted-foreground" />
-                <span className="text-foreground">San Francisco, CA</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Calendar className="w-4 h-4 text-muted-foreground" />
-                <span className="text-foreground">Joined March 2022</span>
-              </div>
-            </div>
-            <div className="flex gap-2 pt-4">
-              <Button size="sm" className="flex-1 bg-gradient-primary hover:shadow-primary">
-                <Edit className="w-4 h-4 mr-2" />
-                Edit Profile
-              </Button>
-              <Button variant="outline" size="sm">
-                <Settings className="w-4 h-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
+      <div className="activity-info">
         {/* Stats and Activity */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6">
           {/* Stats Cards */}
           <div className="grid gap-4 md:grid-cols-3">
             {userStats.map((stat, index) => (
-              <Card key={index} className="bg-gradient-card shadow-card border-border">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-                      <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                <Card key={index} className="bg-gradient-card shadow-card border-border">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+                        <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                      </div>
+                      <div className={`w-12 h-12 ${stat.color} rounded-lg opacity-20`}></div>
                     </div>
-                    <div className={`w-12 h-12 ${stat.color} rounded-lg opacity-20`}></div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
             ))}
           </div>
 
